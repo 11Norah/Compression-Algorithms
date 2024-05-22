@@ -1,9 +1,5 @@
 package Decompression;
 
-import Compression.HuffmanCompNode;
-
-import java.util.Arrays;
-
 public class Chunk {
     private HuffmanDecompNode root;
     private String treeBits, dataBits;
@@ -25,7 +21,7 @@ public class Chunk {
         generateTree();
     }
     public void generateTree() {
-        root = TreeDecoder.decodeTree(treeBits, n);
+        root = TreeNodeDecoder.decodeTree(treeBits, n);
     }
 
     public String getDataBits() {

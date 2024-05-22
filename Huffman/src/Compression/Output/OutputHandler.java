@@ -1,7 +1,6 @@
 package Compression.Output;
 
 import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ public class OutputHandler {
     private int counter;
     private int leadingZeroes;
     private boolean hasVal;
+    private ChunkFormatter chunkFormatter;
     private final BufferedOutputStream bufferedOutputStream;
 
     public OutputHandler(BufferedOutputStream bufferedOutputStream) {
@@ -19,21 +19,17 @@ public class OutputHandler {
         this.counter = 0;
         this.leadingZeroes = 0;
         this.bufferedOutputStream = bufferedOutputStream;
+        this.chunkFormatter = new ChunkFormatter();
     }
 
+
     public int getNumberOfBytes() {
-        return this.counter;
+        return this.chunkFormatter.getChunkSize();
     }
 
     private void saveByte() {
-        this.counter++;
-        this.currByte <<= 1;
-        if (!this.hasVal) this.leadingZeroes++;
-        try {
-            this.bufferedOutputStream.write(this.currByte);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+        chunkFormatter.addByte(this.currByte);
+        this.counter = 0;
         this.currByte = 0;
         this.hasVal = false;
     }
@@ -41,18 +37,19 @@ public class OutputHandler {
     public void add(String binaryRepresentation) {
         for (int i = 0; i < binaryRepresentation.length(); i++) {
             writeBit(binaryRepresentation.charAt(i) == '1');
+            if (counter == 8) saveByte();
         }
     }
 
     private void writeBit(boolean bit) {
-        if (!this.hasVal) this.leadingZeroes = 0;
+        if (!this.hasVal) leadingZeroes = 0;
         this.hasVal = true;
         this.currByte <<= 1;
+        counter++;
         if (bit) this.currByte |= 1;
-        else if (this.currByte == 0) this.leadingZeroes++;
-        this.counter++;
-        if (this.counter == 8) saveByte();
+        else if (this.currByte == 0) leadingZeroes++;
     }
+
 
     public void writeBytes(byte[] bytes) {
         try {
@@ -68,7 +65,7 @@ public class OutputHandler {
             byte[] bytes = bigInteger.toByteArray();
             byte[] res = new byte[4];
             int c = 3;
-            if (bytes.length == 4) this.bufferedOutputStream.write(bytes);
+            if (bytes.length == 4) bufferedOutputStream.write(bytes);
             else {
                 for (int i = bytes.length - 1; i >= 0; i--) {
                     res[c--] = bytes[i];
@@ -76,7 +73,7 @@ public class OutputHandler {
                 for (int i = c; i >= 0; i--) {
                     res[c] = 0;
                 }
-                this.bufferedOutputStream.write(res);
+                bufferedOutputStream.write(res);
             }
         } catch (IOException ioException) {
             ioException.printStackTrace();
@@ -85,7 +82,7 @@ public class OutputHandler {
 
     public EncodedTreeInfo parseStringToBytes(String s) {
         int numOfLeadingZeroes = 0;
-        ArrayList<Byte> byteArrayList = new ArrayList<>();
+        ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
         for (int i = 0; i < s.length(); i += 8) {
             byte num = 0;
             numOfLeadingZeroes = 0;
@@ -109,16 +106,27 @@ public class OutputHandler {
 
     public int close() {
         int res = this.leadingZeroes;
-        if (this.currByte == 0 && hasVal) res--;
+        if (this.currByte == 0 && hasVal || this.chunkFormatter.lastAdded == 0 && !hasVal) res--;
         if (hasVal) saveByte();
         return res;
     }
 
+
     public void writeToFile() {
         try {
-            this.bufferedOutputStream.flush();
+            bufferedOutputStream.write(this.chunkFormatter.getBytes());
+            flush();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
+
+    private void flush() {
+        this.counter = 0;
+        this.currByte = 0;
+        this.hasVal = false;
+        this.chunkFormatter = new ChunkFormatter();
+        this.leadingZeroes = 0;
+    }
+
 }

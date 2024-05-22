@@ -2,10 +2,9 @@ import Compression.HuffmanCompression;
 import Decompression.Decompression;
 
 import java.io.*;
-import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Objects;
-import FileUtils.*;
+
+import FileUtils.FileUtils;
 
 
 public class Main {
@@ -24,7 +23,10 @@ public class Main {
                 HuffmanCompression huffmanCodeGenerator = new HuffmanCompression(n);
                 huffmanCodeGenerator.compress(fileInputStream, fileOutputStream);
                 long end = System.currentTimeMillis();
-                System.out.println("Compression time = " + (end - start)  + " m");
+                System.out.println("file input size " + fileToBeCompressed.length());
+                System.out.println("compressed " + fileToBegenerated.length());
+
+                System.out.println("Compression time = " + (end - start) + " ms");
                 File file = new File(fileToBegenerated);
                 File file1 = new File(fileToBeCompressed);
                 double compressionRatio = (double) file.length() /(double)  file1.length();
@@ -43,7 +45,7 @@ public class Main {
                 Decompression decoder = new Decompression(fileInputStream, bufferedOutputStream);
                 decoder.decode();
                 long end = System.currentTimeMillis();
-                System.out.println("Decompression time = " + (end - start)   + " ms");
+                System.out.println("Decompression time = " + (end - start)  + " m");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }

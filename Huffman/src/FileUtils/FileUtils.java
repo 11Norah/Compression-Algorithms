@@ -3,10 +3,6 @@ package FileUtils;
 import java.io.*;
 
 public class FileUtils {
-    public static FileInputStream getFileInputStream(String filePath) throws FileNotFoundException {
-        return new FileInputStream(filePath);
-    }
-
     public static String getOutputFileStreamForCompression(String inputFilePath, int n) {
         File inputFile = new File(inputFilePath);
         String directory = inputFile.getParent();
@@ -30,7 +26,7 @@ public class FileUtils {
         }
     }
 
-    public static Input[] readInput(int numOfBytes, FileInputStream fileInputStream, int chunkLength) throws IOException {
+    public static Input[] read(int numOfBytes, FileInputStream fileInputStream, int chunkLength) throws IOException {
         int i = 0, k = 0;
         byte[] bytes = fileInputStream.readNBytes(Math.min(chunkLength, fileInputStream.available()));
         int inputSize = bytes.length / numOfBytes;

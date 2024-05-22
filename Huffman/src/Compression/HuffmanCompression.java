@@ -6,7 +6,10 @@ import Compression.Output.OutputTreeTransversal;
 import FileUtils.FileUtils;
 import FileUtils.Input;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -78,13 +81,13 @@ public class HuffmanCompression {
 
     public void chunksLoop(FileInputStream fileInputStream, OutputHandler outputWriter) throws IOException {
         int chunkLength = 5000000;
-        Input[] inputs = FileUtils.readInput(this.numOfBytes, fileInputStream, chunkLength);
+        Input[] inputs = FileUtils.read(this.numOfBytes, fileInputStream, chunkLength);
         while (inputs.length != 0) {
             HuffmanCompNode root = generateTheTree(generatePriorityQ(generateFrequencies(inputs)));
             HashMap<Input, String> codes = new HashMap<>();
             traverse(root, codes);
             compressCertainBytes(outputWriter, codes, inputs, OutputTreeTransversal.generatePreOrderTraversal(root));
-            inputs = FileUtils.readInput(this.numOfBytes, fileInputStream, chunkLength);
+            inputs = FileUtils.read(this.numOfBytes, fileInputStream, chunkLength);
         }
     }
 
