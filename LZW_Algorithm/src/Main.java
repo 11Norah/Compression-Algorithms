@@ -41,7 +41,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void displayTimeAndRatio(long start, long end, String resultFilePath , String originalFilePath) {
+    private static void displayTimeAndRatio(long start, long end, String originalFilePath , String resultFilePath) {
         long timeTaken = end - start;
         System.out.println("Time taken: " + timeTaken + " ms");
 
@@ -51,7 +51,8 @@ public class Main {
         if (originalFile.exists() && resultFile.exists()) {
             long originalSize = originalFile.length();
             long resultSize = resultFile.length();
-
+            System.out.printf("Size of Original file is:%d KB\n",originalSize/1024);
+            System.out.printf("Size of Compressed file is:%d KB\n",resultSize/1024);
             double ratio = (double) resultSize / originalSize;
 
             if(ratio==1.0) {System.out.printf("Decompression ratio: %.2f\n", ratio);}
