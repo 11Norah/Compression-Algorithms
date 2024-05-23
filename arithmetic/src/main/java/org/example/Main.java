@@ -13,7 +13,7 @@ public class Main {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
 
-        String text = compression.fileReader("input12k.txt") ;
+        String text = compression.fileReader("input8k.txt") ;
         compression.probabilities = compression.calculateProbabilities(text) ;
         System.out.println(compression.probabilities) ;
         compression.cumulativeProbabilities = compression.cumulativeProb(text) ;
@@ -36,7 +36,7 @@ public class Main {
         //System.out.println(decoded);
         decompression.saveDecompressedMessage("output.txt",decoded);
 
-        long inBytes = Files.size(Paths.get("input12k.txt"));
+        long inBytes = Files.size(Paths.get("input8k.txt"));
         long outBytes = Files.size(Paths.get("compressed.dart"));
         System.out.println("Input file size in bytes "+inBytes);
         System.out.println("Compressed file size in bytes "+outBytes);
