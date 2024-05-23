@@ -52,11 +52,15 @@ public class Main {
             long originalSize = originalFile.length();
             long resultSize = resultFile.length();
             System.out.printf("Size of Original file is:%d KB\n",originalSize/1024);
-            System.out.printf("Size of Compressed file is:%d KB\n",resultSize/1024);
+
             double ratio = (double) resultSize / originalSize;
 
-            if(ratio==1.0) {System.out.printf("Decompression ratio: %.2f\n", ratio);}
-            else{System.out.printf("Compression ratio: %.2f\n", ratio);}
+            if(ratio==1.0) {
+                System.out.printf("Size of Decompressed file is:%d KB\n",resultSize/1024);
+                System.out.printf("Decompression ratio: %.2f\n", ratio);}
+            else{
+                System.out.printf("Size of Compressed file is:%d KB\n",resultSize/1024);
+                System.out.printf("Compression ratio: %.2f\n", ratio);}
         } else {
             System.out.println("Could not calculate compression/decompression ratio because one of the files does not exist.");
         }
